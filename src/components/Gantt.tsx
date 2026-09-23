@@ -47,7 +47,8 @@ export function Gantt({ data, items, onOpen }: Props) {
   const weeks: { label: string; left: number }[] = [];
   for (let d = start; d <= end; d++) {
     const iso = fromDay(d);
-    if (iso.endsWith('-01') || d === start) {
+    const monthStartsSoon = d === start && Number(iso.slice(8)) > 24;
+    if (iso.endsWith('-01') || (d === start && !monthStartsSoon)) {
       const dt = new Date(`${iso}T00:00:00Z`);
       months.push({ label: dt.toLocaleDateString(undefined, { month: 'long', year: 'numeric', timeZone: 'UTC' }), left: x(d) });
     }
@@ -61,11 +62,11 @@ export function Gantt({ data, items, onOpen }: Props) {
   return (
     <div className="gantt-wrap">
       <div className="legend">
-        <span><i className="lg bar" /> first assigned → due date</span>
-        <span><i className="lg open" /> assigned, no due date (runs to today / close)</span>
-        <span><i className="lg due" /> due date, never assigned</span>
-        <span><i className="lg overdue" /> overdue</span>
-        <span><i className="lg today" /> today</span>
+        <span><i className="lg lg-bar" /> first assigned → due date</span>
+        <span><i className="lg lg-open" /> assigned, no due date (runs to today / close)</span>
+        <span><i className="lg lg-due" /> due date, never assigned</span>
+        <span><i className="lg lg-overdue" /> overdue</span>
+        <span><i className="lg lg-today" /> today</span>
       </div>
       <div className="gantt" style={{ ['--label-w' as string]: `${LABEL_W}px` }}>
         <div className="g-inner" style={{ width: LABEL_W + width }}>

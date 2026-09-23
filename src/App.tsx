@@ -155,11 +155,11 @@ export function App({ auth }: { auth: AuthProvider }) {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <span className="logo" aria-hidden>
-            <i />
-            <i />
-            <i />
-          </span>
+          <svg className="logo" viewBox="0 0 16 16" width="18" height="18" aria-hidden>
+            <rect x="1" y="2" width="4" height="12" rx="1" fill="#2f81f7" />
+            <rect x="6" y="2" width="4" height="8" rx="1" fill="#a371f7" />
+            <rect x="11" y="2" width="4" height="5" rx="1" fill="#3fb950" />
+          </svg>
           Project Planning
         </div>
         <label className="project-select">
