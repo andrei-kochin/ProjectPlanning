@@ -1,0 +1,1650 @@
+{
+  "id": "PVT_fixture_benchmark",
+  "title": "Benchmark planning",
+  "url": "https://github.com/users/andrei-kochin/projects/1",
+  "fields": {
+    "nodes": [
+      {
+        "__typename": "ProjectV2Field",
+        "id": "PVTF_title",
+        "name": "Title",
+        "dataType": "TITLE"
+      },
+      {
+        "__typename": "ProjectV2Field",
+        "id": "PVTF_assignees",
+        "name": "Assignees",
+        "dataType": "ASSIGNEES"
+      },
+      {
+        "__typename": "ProjectV2SingleSelectField",
+        "id": "PVTSSF_status",
+        "name": "Status",
+        "dataType": "SINGLE_SELECT",
+        "options": [
+          {
+            "id": "opt_todo",
+            "name": "Todo",
+            "color": "GRAY"
+          },
+          {
+            "id": "opt_progress",
+            "name": "In Progress",
+            "color": "YELLOW"
+          },
+          {
+            "id": "opt_blocked",
+            "name": "Blocked",
+            "color": "RED"
+          },
+          {
+            "id": "opt_review",
+            "name": "In Review",
+            "color": "PURPLE"
+          },
+          {
+            "id": "opt_done",
+            "name": "Done",
+            "color": "GREEN"
+          }
+        ]
+      },
+      {
+        "__typename": "ProjectV2Field",
+        "id": "PVTF_labels",
+        "name": "Labels",
+        "dataType": "LABELS"
+      },
+      {
+        "__typename": "ProjectV2Field",
+        "id": "PVTF_due",
+        "name": "Due date",
+        "dataType": "DATE"
+      },
+      {
+        "__typename": "ProjectV2IterationField",
+        "id": "PVTIF_iteration",
+        "name": "Iteration",
+        "dataType": "ITERATION",
+        "configuration": {
+          "completedIterations": [
+            {
+              "id": "it_s1",
+              "title": "Sprint 1",
+              "startDate": "2026-08-17",
+              "duration": 14
+            },
+            {
+              "id": "it_s2",
+              "title": "Sprint 2",
+              "startDate": "2026-08-31",
+              "duration": 14
+            }
+          ],
+          "iterations": [
+            {
+              "id": "it_s3",
+              "title": "Sprint 3",
+              "startDate": "2026-09-14",
+              "duration": 14
+            },
+            {
+              "id": "it_s4",
+              "title": "Sprint 4",
+              "startDate": "2026-09-28",
+              "duration": 14
+            },
+            {
+              "id": "it_s5",
+              "title": "Sprint 5",
+              "startDate": "2026-10-12",
+              "duration": 14
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "items": {
+    "nodes": [
+      {
+        "id": "PVTI_benchmark_3",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_3",
+          "number": 3,
+          "title": "Baseline vLLM ROCm throughput harness for Llama-3.1-8B",
+          "url": "https://github.com/itikhono/benchmark/issues/3",
+          "state": "CLOSED",
+          "createdAt": "2026-08-12T06:00:00Z",
+          "closedAt": "2026-08-27T16:40:00Z",
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-08-18T09:12:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_done",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-08-28",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s1",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_4",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_4",
+          "number": 4,
+          "title": "Collect rocprof traces during serving benchmark",
+          "url": "https://github.com/itikhono/benchmark/issues/4",
+          "state": "CLOSED",
+          "createdAt": "2026-08-13T00:00:00Z",
+          "closedAt": "2026-08-29T10:05:00Z",
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-08-19T11:03:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_done",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-08-29",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s1",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_5",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_5",
+          "number": 5,
+          "title": "Result parser drops TTFT percentiles for SGLang 0.5",
+          "url": "https://github.com/itikhono/benchmark/issues/5",
+          "state": "CLOSED",
+          "createdAt": "2026-08-13T18:00:00Z",
+          "closedAt": "2026-08-28T14:22:00Z",
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "bug",
+                "color": "d73a4a"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-08-24T08:30:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_done",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-08-30",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s1",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_6",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_6",
+          "number": 6,
+          "title": "Add SGLang engine adapter to orchestrator",
+          "url": "https://github.com/itikhono/benchmark/issues/6",
+          "state": "OPEN",
+          "createdAt": "2026-08-14T12:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-08-31T10:00:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_review",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-18",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s2",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_7",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_7",
+          "number": 7,
+          "title": "Document docker image pinning for ROCm 7.x",
+          "url": "https://github.com/itikhono/benchmark/issues/7",
+          "state": "OPEN",
+          "createdAt": "2026-08-15T06:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "andrei-kochin"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "documentation",
+                "color": "0075ca"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-02T13:45:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-12",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s2",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_8",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_8",
+          "number": 8,
+          "title": "Throughput regression on MI300X after vLLM 0.11 bump",
+          "url": "https://github.com/itikhono/benchmark/issues/8",
+          "state": "OPEN",
+          "createdAt": "2026-08-16T00:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              },
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "bug",
+                "color": "d73a4a"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-03T07:55:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_blocked",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-19",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s2",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_9",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_9",
+          "number": 9,
+          "title": "Sweep max-num-batched-tokens for DeepSeek-V3.2",
+          "url": "https://github.com/itikhono/benchmark/issues/9",
+          "state": "OPEN",
+          "createdAt": "2026-08-16T18:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-14T09:00:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_progress",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-26",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s3",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_10",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_10",
+          "number": 10,
+          "title": "Add ATOM engine support (serving mode only)",
+          "url": "https://github.com/itikhono/benchmark/issues/10",
+          "state": "OPEN",
+          "createdAt": "2026-08-17T12:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": []
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              },
+              {
+                "name": "help wanted",
+                "color": "008672"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": []
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-09",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s4",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_11",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_11",
+          "number": 11,
+          "title": "Per-run environment capture (driver, firmware, image digest)",
+          "url": "https://github.com/itikhono/benchmark/issues/11",
+          "state": "OPEN",
+          "createdAt": "2026-08-18T06:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-15T12:20:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_progress",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-25",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s3",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_12",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_12",
+          "number": 12,
+          "title": "GLM-5.2-FP8 flag search: attention backend x quantized KV cache",
+          "url": "https://github.com/itikhono/benchmark/issues/12",
+          "state": "OPEN",
+          "createdAt": "2026-08-19T00:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-16T08:10:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_progress",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-02",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s3",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_13",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_13",
+          "number": 13,
+          "title": "Orchestrator hangs when container OOMs during warmup",
+          "url": "https://github.com/itikhono/benchmark/issues/13",
+          "state": "OPEN",
+          "createdAt": "2026-08-19T18:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "andrei-kochin"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "bug",
+                "color": "d73a4a"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-17T15:30:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_review",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-24",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s3",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_14",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_14",
+          "number": 14,
+          "title": "Should workloads be defined per model or per engine?",
+          "url": "https://github.com/itikhono/benchmark/issues/14",
+          "state": "OPEN",
+          "createdAt": "2026-08-20T12:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": []
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "question",
+                "color": "d876e3"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": []
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_15",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_15",
+          "number": 15,
+          "title": "Nightly benchmark job on shared MI355X node",
+          "url": "https://github.com/itikhono/benchmark/issues/15",
+          "state": "OPEN",
+          "createdAt": "2026-08-21T06:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-21T10:00:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-09",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s4",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_16",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_16",
+          "number": 16,
+          "title": "Export results to CSV + summary markdown",
+          "url": "https://github.com/itikhono/benchmark/issues/16",
+          "state": "OPEN",
+          "createdAt": "2026-08-22T00:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "andrei-kochin"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-22T09:40:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s4",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_17",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_17",
+          "number": 17,
+          "title": "Speculative decoding (EAGLE-3) benchmark for Llama-4 Maverick",
+          "url": "https://github.com/itikhono/benchmark/issues/17",
+          "state": "OPEN",
+          "createdAt": "2026-08-22T18:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": []
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": []
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-23",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s5",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_18",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_18",
+          "number": 18,
+          "title": "Multi-node TP=16 serving benchmark",
+          "url": "https://github.com/itikhono/benchmark/issues/18",
+          "state": "OPEN",
+          "createdAt": "2026-08-23T12:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": []
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              },
+              {
+                "name": "help wanted",
+                "color": "008672"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": []
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s5",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_19",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_19",
+          "number": 19,
+          "title": "Compare hipBLASLt tuned GEMMs vs defaults",
+          "url": "https://github.com/itikhono/benchmark/issues/19",
+          "state": "OPEN",
+          "createdAt": "2026-08-24T06:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "enhancement",
+                "color": "a2eeef"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-10T11:11:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-16",
+              "field": {
+                "id": "PVTF_due"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_20",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_20",
+          "number": 20,
+          "title": "Clarify success criteria wording in benchmark request form",
+          "url": "https://github.com/itikhono/benchmark/issues/20",
+          "state": "CLOSED",
+          "createdAt": "2026-08-25T00:00:00Z",
+          "closedAt": "2026-09-10T17:00:00Z",
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "documentation",
+                "color": "0075ca"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-08T08:00:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_done",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-11",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s2",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_23",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_23",
+          "number": 23,
+          "title": "[Benchmark request]: Qwen3-235B-A22B FP8 on MI300X, vLLM",
+          "url": "https://github.com/itikhono/benchmark/issues/23",
+          "state": "OPEN",
+          "createdAt": "2026-08-27T06:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "benchmark-request",
+                "color": "0e8a16"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-18T09:00:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_progress",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-30",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s3",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_24",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_24",
+          "number": 24,
+          "title": "[Benchmark request]: Mixtral 8x22B long-context (32k) SGLang",
+          "url": "https://github.com/itikhono/benchmark/issues/24",
+          "state": "OPEN",
+          "createdAt": "2026-08-28T00:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": []
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "benchmark-request",
+                "color": "0e8a16"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": []
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_26",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_26",
+          "number": 26,
+          "title": "[Benchmark request]: gpt-oss-120b MXFP4 latency sweep",
+          "url": "https://github.com/itikhono/benchmark/issues/26",
+          "state": "OPEN",
+          "createdAt": "2026-08-29T12:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "sshliapn"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "benchmark-request",
+                "color": "0e8a16"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-22T14:00:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-07",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s4",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_27",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_27",
+          "number": 27,
+          "title": "Flaky: client timeout at concurrency 256",
+          "url": "https://github.com/itikhono/benchmark/issues/27",
+          "state": "OPEN",
+          "createdAt": "2026-08-30T06:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "andrei-kochin"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "bug",
+                "color": "d73a4a"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-20T10:30:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_progress",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-09-18",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s3",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_30",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_30",
+          "number": 30,
+          "title": "[Benchmark request]: Llama-3.3-70B FP8 vs BF16 throughput, ATOM",
+          "url": "https://github.com/itikhono/benchmark/issues/30",
+          "state": "OPEN",
+          "createdAt": "2026-09-01T12:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": []
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "benchmark-request",
+                "color": "0e8a16"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": []
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_benchmark_32",
+        "type": "ISSUE",
+        "isArchived": false,
+        "content": {
+          "__typename": "Issue",
+          "id": "I_benchmark_32",
+          "number": 32,
+          "title": "[Benchmark request]: GLM-5.2-FP8 serving on MI355X, vLLM nightly",
+          "url": "https://github.com/itikhono/benchmark/issues/32",
+          "state": "OPEN",
+          "createdAt": "2026-09-03T00:00:00Z",
+          "closedAt": null,
+          "repository": {
+            "nameWithOwner": "itikhono/benchmark"
+          },
+          "assignees": {
+            "nodes": [
+              {
+                "login": "itikhono"
+              }
+            ]
+          },
+          "labels": {
+            "nodes": [
+              {
+                "name": "benchmark-request",
+                "color": "0e8a16"
+              }
+            ]
+          },
+          "timelineItems": {
+            "nodes": [
+              {
+                "createdAt": "2026-09-23T07:15:00Z"
+              }
+            ]
+          }
+        },
+        "fieldValues": {
+          "nodes": [
+            {
+              "__typename": "ProjectV2ItemFieldTextValue"
+            },
+            {
+              "__typename": "ProjectV2ItemFieldSingleSelectValue",
+              "optionId": "opt_todo",
+              "field": {
+                "id": "PVTSSF_status"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldDateValue",
+              "date": "2026-10-14",
+              "field": {
+                "id": "PVTF_due"
+              }
+            },
+            {
+              "__typename": "ProjectV2ItemFieldIterationValue",
+              "iterationId": "it_s4",
+              "field": {
+                "id": "PVTIF_iteration"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PVTI_draft_1",
+        "type": "DRAFT_ISSUE",
+        "content": {
+          "__typename": "DraftIssue"
+        },
+        "fieldValues": {
+          "nodes": []
+        }
+      },
+      {
+        "id": "PVTI_pr_31",
+        "type": "PULL_REQUEST",
+        "content": {
+          "__typename": "PullRequest"
+        },
+        "fieldValues": {
+          "nodes": []
+        }
+      }
+    ]
+  }
+}
