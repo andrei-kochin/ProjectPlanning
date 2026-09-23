@@ -17,8 +17,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  # Sync, build and deploy share one job so that it runs in the github-pages environment:
+  # PROJECTS_TOKEN may be an environment secret there, which other jobs cannot read.
+  sync-build-deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +43,7 @@ jobs:
           if [ -n "$PROJECTS_TOKEN" ]; then
             npm run sync
           else
-            echo "::warning title=PROJECTS_TOKEN not set::Deploying fixture data. Add the PROJECTS_TOKEN repository secret to sync real issues."
+            echo "::warning title=PROJECTS_TOKEN not set::Deploying fixture data. Add PROJECTS_TOKEN as a github-pages environment secret or a repository secret to sync real issues."
             npm run data:fixtures
           fi
 
@@ -50,12 +55,5 @@ jobs:
         with:
           path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
       - id: deployment
         uses: actions/deploy-pages@v4

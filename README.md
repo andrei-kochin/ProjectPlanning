@@ -59,7 +59,12 @@ The sync Action needs to read the issues (including their timelines) and the boa
 
 A **fine-grained PAT is usually not an option here.** Fine-grained tokens are bound to one resource owner (you, or one org) and can only reach repos owned by it. A private repo owned by *another user* (such as `itikhono/benchmark`) cannot be selected even if you are a collaborator. Fine-grained tokens also have limited support for user-owned Projects v2. If the issue repo and the board both belong to an organization, a fine-grained token with *Repository → Issues: Read* and *Organization → Projects: Read/Write* for that org does work.
 
-Then in this repo go to **Settings → Secrets and variables → Actions → New repository secret**, name it **`PROJECTS_TOKEN`**, and paste the token.
+Then store the token as a secret named **`PROJECTS_TOKEN`**. Either place works:
+
+- **Environment secret (recommended):** **Settings → Environments → `github-pages` → Environment secrets → Add secret**. Only jobs that declare `environment: github-pages` can read it. The sync, build and deploy steps therefore run in one job in that environment. The environment's deployment-branch rule (by default only `main`) also controls which branches can use the token. The `github-pages` environment appears after Pages is enabled with the GitHub Actions source (step 4).
+- **Repository secret:** **Settings → Secrets and variables → Actions → New repository secret**. Every workflow in the repo can read it.
+
+If both exist, the environment secret takes precedence.
 
 Without the secret, the workflow still deploys, but with the bundled fixture data and a warning. The site shows a "fixture data" banner in that case.
 
