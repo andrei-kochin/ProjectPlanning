@@ -34,7 +34,7 @@ export function Kanban({ data, items, savingIds, onMove, onOpen }: Props) {
     const itemId = e.dataTransfer.getData(DRAG_TYPE);
     const item = data.items.find((i) => i.itemId === itemId);
     const target = columnId === NO_STATUS ? null : columnId;
-    if (item && item.statusOptionId !== target) onMove(item, target);
+    if (item && !savingIds.has(item.itemId) && item.statusOptionId !== target) onMove(item, target);
   };
 
   return (
@@ -66,7 +66,8 @@ export function Kanban({ data, items, savingIds, onMove, onOpen }: Props) {
                 <article
                   key={item.itemId}
                   className={`card ${savingIds.has(item.itemId) ? 'saving' : ''} ${draggingId === item.itemId ? 'dragging' : ''}`}
-                  draggable
+                  draggable={!savingIds.has(item.itemId)}
+                  aria-busy={savingIds.has(item.itemId)}
                   onDragStart={(e) => {
                     e.dataTransfer.setData(DRAG_TYPE, item.itemId);
                     e.dataTransfer.effectAllowed = 'move';

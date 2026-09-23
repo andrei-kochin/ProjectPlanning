@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { AuthProvider } from './lib/auth';
 import { fetchBoard } from './lib/fetcher';
 import { createGraphQLClient } from './lib/graphql';
-import { saveItemPatch } from './lib/mutations';
+import { PartialSaveError, saveItemPatch } from './lib/mutations';
 import { normalizeBoard } from './lib/normalize';
 import { VIEWER_QUERY } from './lib/queries';
 import type { PlanItem, ProjectData, ProjectIndex } from './lib/types';
@@ -47,6 +47,9 @@ export function App({ auth }: { auth: AuthProvider }) {
   const [tokenOpen, setTokenOpen] = useState(false);
   const [login, setLogin] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const currentProject = useRef(projectId);
+  currentProject.current = projectId;
+  const inFlight = useRef(new Set<string>());
 
   const token = useSyncExternalStore(
     (cb) => auth.subscribe(cb),
@@ -64,17 +67,21 @@ export function App({ auth }: { auth: AuthProvider }) {
   }, []);
 
   useEffect(() => {
-    if (!projectId) return;
+    if (!projectId || !index) return;
     setData(null);
     setLoadError(null);
-    const entry = index?.projects.find((p) => p.id === projectId);
+    const entry = index.projects.find((p) => p.id === projectId);
     if (entry?.error) {
       setLoadError(`Last sync failed for ${entry.name}: ${entry.error}`);
       return;
     }
+    let stale = false;
     getJson<ProjectData>(`${projectId}.json`)
-      .then(setData)
-      .catch((e: Error) => setLoadError(e.message));
+      .then((d) => !stale && setData(d))
+      .catch((e: Error) => !stale && setLoadError(e.message));
+    return () => {
+      stale = true;
+    };
   }, [projectId, index]);
 
   useEffect(() => {
@@ -100,7 +107,7 @@ export function App({ auth }: { auth: AuthProvider }) {
 
   const save = useCallback(
     async (item: PlanItem, patch: ItemPatch) => {
-      if (!data) return;
+      if (!data || inFlight.current.has(item.itemId)) return;
       const original: ItemPatch = {};
       for (const k of Object.keys(patch) as (keyof ItemPatch)[]) (original as any)[k] = item[k];
       const label = `#${item.issue.number}`;
@@ -115,15 +122,24 @@ export function App({ auth }: { auth: AuthProvider }) {
         setToast({ kind: 'info', text: 'Add a GitHub token to edit the board.' });
         return;
       }
+      const projectAtStart = data.id;
+      inFlight.current.add(item.itemId);
       setData((d) => d && applyItemPatch(d, item.itemId, patch));
       setSavingIds((s) => new Set(s).add(item.itemId));
       try {
         await saveItemPatch(gql, data, item.itemId, patch);
         setToast({ kind: 'ok', text: `Saved ${label} to GitHub.` });
       } catch (e) {
-        setData((d) => d && applyItemPatch(d, item.itemId, original));
-        setToast({ kind: 'error', text: `Could not save ${label}: ${(e as Error).message}` });
+        const applied = e instanceof PartialSaveError ? e.applied : {};
+        const rollback: ItemPatch = {};
+        for (const k of Object.keys(original) as (keyof ItemPatch)[]) {
+          if (!(k in applied)) (rollback as any)[k] = original[k];
+        }
+        setData((d) => (d && d.id === projectAtStart ? applyItemPatch(d, item.itemId, rollback) : d));
+        const partial = Object.keys(applied).length > 0 ? ' Some fields were saved; the rest were reverted.' : '';
+        setToast({ kind: 'error', text: `Could not save ${label}: ${(e as Error).message}.${partial}` });
       } finally {
+        inFlight.current.delete(item.itemId);
         setSavingIds((s) => {
           const n = new Set(s);
           n.delete(item.itemId);
@@ -136,12 +152,15 @@ export function App({ auth }: { auth: AuthProvider }) {
 
   const refreshLive = async () => {
     if (!data) return;
+    const { id, config } = data;
     setRefreshing(true);
     try {
-      const board = await fetchBoard(gql, data.config);
-      setData(normalizeBoard(board, data.config));
+      const board = await fetchBoard(gql, config);
+      if (currentProject.current !== id) return;
+      setData(normalizeBoard(board, config));
       setToast({ kind: 'ok', text: 'Loaded live data from GitHub.' });
     } catch (e) {
+      if (currentProject.current !== id) return;
       setToast({ kind: 'error', text: `Live refresh failed: ${(e as Error).message}` });
     } finally {
       setRefreshing(false);

@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { PatAuthProvider } from '../src/lib/auth';
 import { addMissingIssues, fetchBoard } from '../src/lib/fetcher';
 import { createGraphQLClient, type GraphQLFn } from '../src/lib/graphql';
-import { saveItemPatch } from '../src/lib/mutations';
+import { PartialSaveError, saveItemPatch } from '../src/lib/mutations';
 import { normalizeBoard } from '../src/lib/normalize';
 import { rawIssueItem, testBoard, testConfig } from './helpers';
 
@@ -71,6 +71,35 @@ describe('saveItemPatch', () => {
     const [[query, vars]] = gql.mock.calls as any[];
     expect(query).toContain('clearProjectV2ItemFieldValue');
     expect(vars).toEqual({ projectId: 'PVT_1', itemId: 'item-1', fieldId: 'F_due' });
+  });
+
+  it('reports which fields were already written when a later mutation fails', async () => {
+    let n = 0;
+    const gql = vi.fn(async () => {
+      if (++n === 2) throw new Error('boom');
+      return {} as any;
+    });
+    const err = await saveItemPatch(gql, data, 'item-1', { statusOptionId: 'done', dueDate: '2026-10-01', iterationId: 'i2' }).catch((e) => e);
+    expect(err).toBeInstanceOf(PartialSaveError);
+    expect(err.applied).toEqual({ statusOptionId: 'done' });
+    expect(err.failedField).toBe('dueDate');
+    expect(gql).toHaveBeenCalledTimes(2);
+  });
+
+  it('rethrows the original error when nothing was written', async () => {
+    const gql = vi.fn(async () => {
+      throw new Error('denied');
+    });
+    const err = await saveItemPatch(gql, data, 'item-1', { dueDate: '2026-10-01' }).catch((e) => e);
+    expect(err).not.toBeInstanceOf(PartialSaveError);
+    expect(err.message).toBe('denied');
+  });
+
+  it('validates all fields before writing any', async () => {
+    const gql = vi.fn(async () => ({}) as any);
+    const noIter = { ...data, fields: { ...data.fields, iteration: null } };
+    await expect(saveItemPatch(gql, noIter, 'item-1', { statusOptionId: 'done', iterationId: 'i2' })).rejects.toThrow(/no iteration field/);
+    expect(gql).not.toHaveBeenCalled();
   });
 
   it('refuses to write a field the board does not have', async () => {
