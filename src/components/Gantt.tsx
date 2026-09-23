@@ -116,9 +116,9 @@ export function Gantt({ data, items, onOpen }: Props) {
                       <div key={row.item.itemId} className="g-row" onClick={() => onOpen(row.item)}>
                         <div className="g-label">
                           <IssueRef issue={row.item.issue} />
-                          <span className="title" title={row.item.issue.title}>
+                          <button type="button" className="title" title={`Edit: ${row.item.issue.title}`}>
                             {row.item.issue.title}
-                          </span>
+                          </button>
                           <Avatars logins={row.item.issue.assignees} size={18} />
                         </div>
                         <div className="g-track" style={grid}>

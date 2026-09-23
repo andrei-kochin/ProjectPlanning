@@ -49,7 +49,7 @@ export function ItemEditor({ data, item, saving, onClose, onSave }: Props) {
       >
         <label>
           <span>{fields.status?.name ?? 'Status'}</span>
-          <select value={status} onChange={(e) => setStatus(e.target.value)} disabled={!fields.status}>
+          <select value={status} onChange={(e) => setStatus(e.target.value)} disabled={!fields.status} autoFocus>
             <option value="">No status</option>
             {fields.status?.options.map((o) => (
               <option key={o.id} value={o.id}>

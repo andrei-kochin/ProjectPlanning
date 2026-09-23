@@ -155,7 +155,11 @@ input:focus, select:focus, .card:focus-visible { outline: 2px solid var(--accent
 .today-line { position: absolute; top: 0; bottom: 0; width: 2px; background: #fb8500; z-index: 1; pointer-events: none; opacity: 0.85; }
 .g-row { display: flex; border-bottom: 1px solid var(--border-soft); cursor: pointer; }
 .g-row:hover .g-label, .g-row:hover .g-track { background-color: #f6f8fa; }
-.g-row .title { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; }
+.g-row .title {
+  flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: inherit; font-size: 13px;
+  border: 0; background: none; padding: 0; text-align: left; color: inherit; cursor: pointer;
+}
+.g-row .title:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 3px; }
 .g-row .issue-ref { flex: 0 0 auto; min-width: 88px; }
 .group-row { cursor: default; background: #f6f8fa; }
 .group-row .g-label { background: #f6f8fa; gap: 10px; }
@@ -190,6 +194,7 @@ input:focus, select:focus, .card:focus-visible { outline: 2px solid var(--accent
 /* ---------- modal ---------- */
 .modal-backdrop { position: fixed; inset: 0; background: rgba(31, 35, 40, 0.45); display: flex; align-items: flex-start; justify-content: center; padding-top: 10vh; z-index: 20; }
 .modal { background: var(--panel); border-radius: 12px; width: min(520px, 92vw); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); padding: 16px 20px 18px; }
+.modal:focus { outline: none; }
 .modal > header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
 .modal > header h2 { font-size: 14px; margin: 0; font-weight: 600; }
 .editor-title { margin: 0 0 8px; font-size: 17px; line-height: 1.35; }
