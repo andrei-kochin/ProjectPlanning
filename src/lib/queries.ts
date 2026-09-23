@@ -42,7 +42,7 @@ const ITEM_FIELDS = /* GraphQL */ `
         }
       }
     }
-    fieldValues(first: 30) {
+    fieldValues(first: 100) {
       nodes {
         __typename
         ... on ProjectV2ItemFieldSingleSelectValue {
