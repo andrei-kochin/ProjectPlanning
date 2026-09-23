@@ -13,7 +13,7 @@ projects:
     board:
       owner: andrei-kochin
       ownerType: user              # user | organization
-      number: 1                    # the N in https://github.com/users/<owner>/projects/N
+      number: 2                    # the N in https://github.com/users/<owner>/projects/N
     fields:                        # field names as they appear on the board
       status: Status               # single-select; its options become Kanban columns
       dueDate: Due date            # date field; Gantt bar end

@@ -111,7 +111,7 @@ function item(r: Row): RawItem {
 const board: RawBoard = {
   id: 'PVT_fixture_benchmark',
   title: 'Benchmark planning',
-  url: 'https://github.com/users/andrei-kochin/projects/1',
+  url: 'https://github.com/users/andrei-kochin/projects/2',
   fields: {
     nodes: [
       { __typename: 'ProjectV2Field', id: 'PVTF_title', name: 'Title', dataType: 'TITLE' },

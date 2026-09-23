@@ -39,7 +39,7 @@ projects:
   - id: benchmark            # used in ?project=benchmark and the data file name
     name: Benchmark          # shown in the dropdown
     repos: [itikhono/benchmark]
-    board: { owner: andrei-kochin, ownerType: user, number: 1 }
+    board: { owner: andrei-kochin, ownerType: user, number: 2 }
     fields: { status: Status, dueDate: Due date, iteration: Iteration }
     autoAddIssues: false
 ```
