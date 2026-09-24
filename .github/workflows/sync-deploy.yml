@@ -1,0 +1,59 @@
+name: Sync & deploy
+
+on:
+  schedule:
+    - cron: '17 * * * *' # hourly; off the top of the hour to avoid the scheduler rush
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  # Sync, build and deploy share one job so that it runs in the github-pages environment:
+  # PROJECTS_TOKEN may be an environment secret there, which other jobs cannot read.
+  sync-build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Sync GitHub Projects data
+        env:
+          PROJECTS_TOKEN: ${{ secrets.PROJECTS_TOKEN }}
+        run: |
+          if [ -n "$PROJECTS_TOKEN" ]; then
+            npm run sync
+          else
+            echo "::warning title=PROJECTS_TOKEN not set::Deploying fixture data. Add PROJECTS_TOKEN as a github-pages environment secret or a repository secret to sync real issues."
+            npm run data:fixtures
+          fi
+
+      - run: npm run build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

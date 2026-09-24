@@ -1,0 +1,24 @@
+# Supervised projects shown in the site's project dropdown.
+#
+# Each project is backed by one GitHub Projects (v2) board. The board holds the planning
+# fields (Status, Due date, Iteration); the issues themselves live in `repos`.
+# The board may be owned by a different user/org than the repos (e.g. a user-owned
+# board tracking issues of a repo you are only a collaborator on).
+
+projects:
+  - id: benchmark                  # URL-safe id, used for the data file name and ?project=<id>
+    name: Benchmark
+    repos:                         # only issues from these repos are shown
+      - itikhono/benchmark
+    board:
+      owner: andrei-kochin
+      ownerType: user              # user | organization
+      number: 2                    # the N in https://github.com/users/<owner>/projects/N
+    fields:                        # field names as they appear on the board
+      status: Status               # single-select; its options become Kanban columns
+      dueDate: Due date            # date field; Gantt bar end
+      iteration: Iteration         # iteration field; Gantt grouping
+    # When true, the sync adds open issues from `repos` that are not yet on the board.
+    # Needs a token with Projects write access. Useful when the board cannot use
+    # GitHub's built-in auto-add workflow for the repo.
+    autoAddIssues: false
