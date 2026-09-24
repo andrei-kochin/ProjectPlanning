@@ -32,6 +32,7 @@ export function Kanban({ data, items, savingIds, onMove, onOpen }: Props) {
   const drop = (columnId: string, e: React.DragEvent) => {
     e.preventDefault();
     setDragOver(null);
+    setDraggingId(null);
     const itemId = e.dataTransfer.getData(DRAG_TYPE);
     const item = data.items.find((i) => i.itemId === itemId);
     const target = columnId === NO_STATUS ? null : columnId;
