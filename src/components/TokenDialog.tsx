@@ -14,7 +14,6 @@ export function TokenDialog({ auth, login, onClose }: Props) {
   const [value, setValue] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [remember, setRemember] = useState(false);
   const signedIn = !!auth.getToken();
 
   const submit = async () => {
@@ -23,7 +22,7 @@ export function TokenDialog({ auth, login, onClose }: Props) {
     try {
       const probe = createGraphQLClient({ getToken: () => value.trim() });
       await probe(VIEWER_QUERY);
-      await auth.signIn(value, { remember });
+      await auth.signIn(value);
       onClose();
     } catch (e) {
       setError((e as Error).message);
@@ -37,11 +36,8 @@ export function TokenDialog({ auth, login, onClose }: Props) {
       {signedIn ? (
         <div className="token-state">
           <p>
-            A token is in use{login ? ` for @${login}` : ''}.{' '}
-            {auth.isRemembered()
-              ? "It is remembered in this browser's localStorage until you remove it."
-              : 'It is kept in memory only and is forgotten when you reload or close this page.'}{' '}
-            Edits on the board are written to GitHub with it.
+            A token is in use{login ? ` for @${login}` : ''}. It is kept in memory only and is forgotten when you reload or
+            close this page. Edits on the board are written to GitHub with it.
           </p>
           <button
             className="btn danger"
@@ -78,15 +74,9 @@ export function TokenDialog({ auth, login, onClose }: Props) {
               autoFocus
             />
           </label>
-          <label className="check remember">
-            <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-            Remember on this device
-          </label>
           <p className="muted small">
-            The token is sent only to api.github.com. By default it is kept in memory and forgotten on reload. If you choose to
-            remember it, it goes into <code>localStorage</code>, which every page on this origin can read, including other
-            GitHub Pages sites under the same <code>&lt;user&gt;.github.io</code> account. Only remember it on a trusted device
-            if you don't host untrusted Pages sites under the same account.
+            The token is sent only to api.github.com and kept in memory only. It is never saved in browser storage, so you
+            need to paste it again after reloading the page.
           </p>
           {error && (
             <div className="banner error inline" role="alert">

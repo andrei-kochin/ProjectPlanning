@@ -3,57 +3,52 @@
  * user-pasted PAT; an OAuth/GitHub App provider can implement the same interface later without
  * touching the views.
  */
-export interface SignInOptions {
-  /** Persist the credential across reloads on this device. */
-  remember?: boolean;
-}
-
 export interface AuthProvider {
   readonly kind: string;
   getToken(): string | null;
-  /** Whether the current credential is persisted beyond this page load. */
-  isRemembered(): boolean;
   /** For the PAT provider, `credential` is the token. Other providers may ignore it and redirect. */
-  signIn(credential?: string, options?: SignInOptions): Promise<void>;
+  signIn(credential?: string): Promise<void>;
   signOut(): void;
   subscribe(listener: () => void): () => void;
 }
 
-const STORAGE_KEY = 'projectplanning.github-token';
+/** Key used by earlier builds that could persist the token; removed on startup. */
+export const LEGACY_TOKEN_KEY = 'projectplanning.github-token';
 
-type KeyValueStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+type RemovableStorage = Pick<Storage, 'removeItem'>;
 
 /**
- * Keeps the token in memory by default, so it is gone on reload. `localStorage` is shared by every
- * page on the origin (all project Pages sites under <user>.github.io), so persisting is opt-in.
+ * Keeps the token in memory only, so it is gone on reload. Browser storage is shared by every page
+ * on the origin (all project Pages sites under <user>.github.io), so the token is never written there.
  */
 export class PatAuthProvider implements AuthProvider {
   readonly kind = 'pat';
-  private memoryToken: string | null = null;
+  private token: string | null = null;
   private listeners = new Set<() => void>();
 
-  constructor(private storage: KeyValueStorage | null = safeLocalStorage()) {}
+  constructor(legacyStorages: RemovableStorage[] = browserStorages()) {
+    for (const s of legacyStorages) {
+      try {
+        s.removeItem(LEGACY_TOKEN_KEY);
+      } catch {
+        // Storage can throw when disabled; nothing to clean up then.
+      }
+    }
+  }
 
   getToken(): string | null {
-    return this.memoryToken ?? this.storage?.getItem(STORAGE_KEY) ?? null;
+    return this.token;
   }
 
-  isRemembered(): boolean {
-    return !!this.storage?.getItem(STORAGE_KEY);
-  }
-
-  async signIn(credential?: string, options: SignInOptions = {}): Promise<void> {
+  async signIn(credential?: string): Promise<void> {
     const token = credential?.trim();
     if (!token) throw new Error('Paste a GitHub token first');
-    this.memoryToken = token;
-    if (options.remember && this.storage) this.storage.setItem(STORAGE_KEY, token);
-    else this.storage?.removeItem(STORAGE_KEY);
+    this.token = token;
     this.emit();
   }
 
   signOut(): void {
-    this.memoryToken = null;
-    this.storage?.removeItem(STORAGE_KEY);
+    this.token = null;
     this.emit();
   }
 
@@ -67,10 +62,15 @@ export class PatAuthProvider implements AuthProvider {
   }
 }
 
-function safeLocalStorage(): KeyValueStorage | null {
-  try {
-    return typeof window !== 'undefined' ? window.localStorage : null;
-  } catch {
-    return null;
+function browserStorages(): RemovableStorage[] {
+  if (typeof window === 'undefined') return [];
+  const out: RemovableStorage[] = [];
+  for (const get of [() => window.localStorage, () => window.sessionStorage]) {
+    try {
+      out.push(get());
+    } catch {
+      // Accessing storage throws when it is blocked.
+    }
   }
+  return out;
 }

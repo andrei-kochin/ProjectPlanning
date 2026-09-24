@@ -207,7 +207,6 @@ input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1
 .editor .row { display: flex; gap: 8px; align-items: center; }
 .editor footer { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 .editor p { margin: 0; }
-.editor label.check.remember { flex-direction: row; font-weight: 500; color: var(--text); }
 .token-state p { margin: 8px 0 14px; }
 
 /* ---------- toast ---------- */

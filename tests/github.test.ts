@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { PatAuthProvider } from '../src/lib/auth';
+import { LEGACY_TOKEN_KEY, PatAuthProvider } from '../src/lib/auth';
 import { addMissingIssues, fetchBoard, nextCursor } from '../src/lib/fetcher';
 import { createGraphQLClient, type GraphQLFn } from '../src/lib/graphql';
 import { PartialSaveError, saveItemPatch } from '../src/lib/mutations';
@@ -143,41 +143,30 @@ describe('createGraphQLClient', () => {
 });
 
 describe('PatAuthProvider', () => {
-  const memStorage = () => {
-    const mem = new Map<string, string>();
-    return { mem, getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
-  };
-
-  it('keeps the token in memory only by default', async () => {
-    const storage = memStorage();
-    const auth = new PatAuthProvider(storage);
-    await auth.signIn('  ghp_x  ');
-    expect(auth.getToken()).toBe('ghp_x');
-    expect(auth.isRemembered()).toBe(false);
-    expect(storage.mem.size).toBe(0);
-    expect(new PatAuthProvider(storage).getToken()).toBeNull();
-  });
-
-  it('persists only when asked to remember, and forgets on sign-out', async () => {
-    const storage = memStorage();
-    const auth = new PatAuthProvider(storage);
+  it('keeps the token in memory only and notifies listeners', async () => {
+    const auth = new PatAuthProvider([]);
     const listener = vi.fn();
     auth.subscribe(listener);
     await expect(auth.signIn('  ')).rejects.toThrow();
-    await auth.signIn('ghp_y', { remember: true });
-    expect(auth.isRemembered()).toBe(true);
-    expect(new PatAuthProvider(storage).getToken()).toBe('ghp_y');
-    await auth.signIn('ghp_z');
-    expect(storage.mem.size).toBe(0);
+    await auth.signIn('  ghp_x  ');
+    expect(auth.getToken()).toBe('ghp_x');
+    expect(new PatAuthProvider([]).getToken()).toBeNull();
     auth.signOut();
     expect(auth.getToken()).toBeNull();
-    expect(listener).toHaveBeenCalledTimes(3);
+    expect(listener).toHaveBeenCalledTimes(2);
   });
 
-  it('works without any storage', async () => {
-    const auth = new PatAuthProvider(null);
-    await auth.signIn('ghp_x', { remember: true });
-    expect(auth.getToken()).toBe('ghp_x');
-    expect(auth.isRemembered()).toBe(false);
+  it('removes a previously saved token from every storage on startup and never writes one', async () => {
+    const stores = [new Map([[LEGACY_TOKEN_KEY, 'old'], ['other', 'keep']]), new Map([[LEGACY_TOKEN_KEY, 'old']])];
+    const storages = stores.map((m) => ({ removeItem: (k: string) => void m.delete(k), setItem: vi.fn() }));
+    const auth = new PatAuthProvider(storages);
+    expect(stores.map((m) => [...m.keys()])).toEqual([['other'], []]);
+    await auth.signIn('ghp_x');
+    expect(storages.every((st) => st.setItem.mock.calls.length === 0)).toBe(true);
+  });
+
+  it('tolerates storage that throws', () => {
+    const broken = { removeItem: () => { throw new Error('SecurityError'); } };
+    expect(() => new PatAuthProvider([broken])).not.toThrow();
   });
 });
