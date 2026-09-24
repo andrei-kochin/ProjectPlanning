@@ -14,8 +14,8 @@ export function Avatars({ logins, size = 20 }: { logins: string[]; size?: number
   return (
     <span className="avatars">
       {logins.map((l) => (
-        <span key={l} className="avatar" title={`@${l}`} style={{ width: size, height: size }}>
-          <span className="initial">{l[0]?.toUpperCase()}</span>
+        <span key={l} className="avatar" title={`@${l}`} role="img" aria-label={`Assignee @${l}`} style={{ width: size, height: size }}>
+          <span className="initial" aria-hidden="true">{l[0]?.toUpperCase()}</span>
           <img
             src={`https://github.com/${l}.png?size=${size * 2}`}
             alt=""
