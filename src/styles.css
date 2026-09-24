@@ -62,7 +62,7 @@ button.icon { border: 0; background: none; font-size: 22px; line-height: 1; curs
 input[type='search'], input[type='password'], input[type='date'], select {
   font: inherit; border: 1px solid var(--border); border-radius: 6px; padding: 5px 8px; background: #fff; color: var(--text);
 }
-input:focus, select:focus, .card:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
 
 /* ---------- sub bar ---------- */
 .subbar {
@@ -108,6 +108,8 @@ input:focus, select:focus, .card:focus-visible { outline: 2px solid var(--accent
 .card.dragging { opacity: 0.4; }
 .card.saving { opacity: 0.6; background: repeating-linear-gradient(-45deg, #fff 0 8px, #f6f8fa 8px 16px); }
 .card h3 { font-size: 13.5px; font-weight: 500; margin: 0; line-height: 1.35; }
+.card-open { font: inherit; color: inherit; background: none; border: 0; padding: 0; text-align: left; cursor: inherit; }
+.card-open:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 .card footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .labels { display: flex; flex-wrap: wrap; gap: 4px; }
 .label { font-size: 11.5px; font-weight: 500; padding: 0 7px; border-radius: 10px; line-height: 18px; white-space: nowrap; }
@@ -205,6 +207,7 @@ input:focus, select:focus, .card:focus-visible { outline: 2px solid var(--accent
 .editor .row { display: flex; gap: 8px; align-items: center; }
 .editor footer { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
 .editor p { margin: 0; }
+.editor label.check.remember { flex-direction: row; font-weight: 500; color: var(--text); }
 .token-state p { margin: 8px 0 14px; }
 
 /* ---------- toast ---------- */

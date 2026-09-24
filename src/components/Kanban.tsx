@@ -75,11 +75,13 @@ export function Kanban({ data, items, savingIds, onMove, onOpen }: Props) {
                   }}
                   onDragEnd={() => setDraggingId(null)}
                   onClick={() => onOpen(item)}
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && onOpen(item)}
                 >
                   <IssueRef issue={item.issue} />
-                  <h3>{item.issue.title}</h3>
+                  <h3>
+                    <button type="button" className="card-open">
+                      {item.issue.title}
+                    </button>
+                  </h3>
                   {item.issue.labels.length > 0 && (
                     <div className="labels">
                       {item.issue.labels.map((l) => (

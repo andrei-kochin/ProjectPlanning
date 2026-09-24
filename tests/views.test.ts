@@ -11,6 +11,7 @@ import {
   NO_ASSIGNEE,
   NO_ITERATION,
   NO_STATUS,
+  rollbackPatch,
   toDay,
 } from '../src/lib/views';
 import { due, iter, loadConfig, loadFixtureBoard, rawIssueItem, status, testBoard, testConfig } from './helpers';
@@ -179,5 +180,14 @@ describe('filterItems / applyItemPatch', () => {
 
   it('returns the same object for an unknown item', () => {
     expect(applyItemPatch(data, 'nope', { dueDate: '2026-01-01' })).toBe(data);
+  });
+});
+
+describe('rollbackPatch', () => {
+  it('restores only fields GitHub did not accept', () => {
+    const original = { statusOptionId: 'todo', dueDate: null, iterationId: 'i1' };
+    expect(rollbackPatch(original, { statusOptionId: 'done' })).toEqual({ dueDate: null, iterationId: 'i1' });
+    expect(rollbackPatch(original, {})).toEqual(original);
+    expect(rollbackPatch(original, { statusOptionId: 'done', dueDate: '2026-10-01', iterationId: 'i2' })).toEqual({});
   });
 });

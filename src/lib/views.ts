@@ -164,6 +164,15 @@ export function applyItemPatch(data: ProjectData, itemId: string, patch: ItemPat
   return found ? { ...data, items } : data;
 }
 
+/** Local values to restore after a failed save: `original` minus the fields GitHub already accepted. */
+export function rollbackPatch(original: ItemPatch, applied: ItemPatch): ItemPatch {
+  const out: ItemPatch = {};
+  for (const k of Object.keys(original) as (keyof ItemPatch)[]) {
+    if (!(k in applied)) (out as Record<string, unknown>)[k] = original[k];
+  }
+  return out;
+}
+
 export function uniqueAssignees(items: PlanItem[]): string[] {
   return [...new Set(items.flatMap((i) => i.issue.assignees))].sort((a, b) => a.localeCompare(b));
 }

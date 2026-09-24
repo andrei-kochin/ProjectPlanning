@@ -18,11 +18,12 @@ export function FilterBar({ items, filter, count, onChange }: Props) {
     <div className="filters">
       <input
         type="search"
+        aria-label="Filter by title or issue number"
         placeholder="Filter by title or #number"
         value={filter.text ?? ''}
         onChange={(e) => set({ text: e.target.value })}
       />
-      <select value={filter.assignee ?? ''} onChange={(e) => set({ assignee: e.target.value || undefined })}>
+      <select aria-label="Filter by assignee" value={filter.assignee ?? ''} onChange={(e) => set({ assignee: e.target.value || undefined })}>
         <option value="">All assignees</option>
         <option value={NO_ASSIGNEE}>Unassigned</option>
         {assignees.map((a) => (
@@ -31,7 +32,7 @@ export function FilterBar({ items, filter, count, onChange }: Props) {
           </option>
         ))}
       </select>
-      <select value={filter.label ?? ''} onChange={(e) => set({ label: e.target.value || undefined })}>
+      <select aria-label="Filter by label" value={filter.label ?? ''} onChange={(e) => set({ label: e.target.value || undefined })}>
         <option value="">All labels</option>
         {labels.map((l) => (
           <option key={l} value={l}>

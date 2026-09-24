@@ -6,7 +6,7 @@ import { PartialSaveError, saveItemPatch } from './lib/mutations';
 import { normalizeBoard } from './lib/normalize';
 import { VIEWER_QUERY } from './lib/queries';
 import type { PlanItem, ProjectData, ProjectIndex } from './lib/types';
-import { applyItemPatch, filterItems, type ItemFilter, type ItemPatch } from './lib/views';
+import { applyItemPatch, filterItems, rollbackPatch, type ItemFilter, type ItemPatch } from './lib/views';
 import { FilterBar } from './components/FilterBar';
 import { Gantt } from './components/Gantt';
 import { ItemEditor } from './components/ItemEditor';
@@ -50,6 +50,7 @@ export function App({ auth }: { auth: AuthProvider }) {
   const currentProject = useRef(projectId);
   currentProject.current = projectId;
   const inFlight = useRef(new Set<string>());
+  const refreshingRef = useRef(false);
 
   const token = useSyncExternalStore(
     (cb) => auth.subscribe(cb),
@@ -108,6 +109,10 @@ export function App({ auth }: { auth: AuthProvider }) {
   const save = useCallback(
     async (item: PlanItem, patch: ItemPatch) => {
       if (!data || inFlight.current.has(item.itemId)) return;
+      if (refreshingRef.current) {
+        setToast({ kind: 'info', text: 'Wait for the live refresh to finish before editing.' });
+        return;
+      }
       const original: ItemPatch = {};
       for (const k of Object.keys(patch) as (keyof ItemPatch)[]) (original as any)[k] = item[k];
       const label = `#${item.issue.number}`;
@@ -131,10 +136,7 @@ export function App({ auth }: { auth: AuthProvider }) {
         setToast({ kind: 'ok', text: `Saved ${label} to GitHub.` });
       } catch (e) {
         const applied = e instanceof PartialSaveError ? e.applied : {};
-        const rollback: ItemPatch = {};
-        for (const k of Object.keys(original) as (keyof ItemPatch)[]) {
-          if (!(k in applied)) (rollback as any)[k] = original[k];
-        }
+        const rollback = rollbackPatch(original, applied);
         setData((d) => (d && d.id === projectAtStart ? applyItemPatch(d, item.itemId, rollback) : d));
         const partial = Object.keys(applied).length > 0 ? ' Some fields were saved; the rest were reverted.' : '';
         setToast({ kind: 'error', text: `Could not save ${label}: ${(e as Error).message}.${partial}` });
@@ -151,8 +153,13 @@ export function App({ auth }: { auth: AuthProvider }) {
   );
 
   const refreshLive = async () => {
-    if (!data) return;
+    if (!data || refreshingRef.current) return;
+    if (inFlight.current.size > 0) {
+      setToast({ kind: 'info', text: 'Wait for pending saves to finish before refreshing.' });
+      return;
+    }
     const { id, config } = data;
+    refreshingRef.current = true;
     setRefreshing(true);
     try {
       const board = await fetchBoard(gql, config);
@@ -163,6 +170,7 @@ export function App({ auth }: { auth: AuthProvider }) {
       if (currentProject.current !== id) return;
       setToast({ kind: 'error', text: `Live refresh failed: ${(e as Error).message}` });
     } finally {
+      refreshingRef.current = false;
       setRefreshing(false);
     }
   };
@@ -191,16 +199,16 @@ export function App({ auth }: { auth: AuthProvider }) {
             ))}
           </select>
         </label>
-        <nav className="tabs" role="tablist">
+        <div className="tabs" role="group" aria-label="View">
           {(['kanban', 'gantt'] as View[]).map((v) => (
-            <button key={v} role="tab" aria-selected={view === v} className={view === v ? 'active' : ''} onClick={() => setView(v)}>
+            <button key={v} type="button" aria-pressed={view === v} className={view === v ? 'active' : ''} onClick={() => setView(v)}>
               {v === 'kanban' ? 'Kanban' : 'Gantt'}
             </button>
           ))}
-        </nav>
+        </div>
         <div className="spacer" />
         {token && data && (
-          <button className="btn ghost" onClick={refreshLive} disabled={refreshing} title="Fetch the board directly from GitHub">
+          <button className="btn ghost" onClick={refreshLive} disabled={refreshing || savingIds.size > 0} title="Fetch the board directly from GitHub">
             {refreshing ? 'Refreshing…' : 'Refresh live'}
           </button>
         )}

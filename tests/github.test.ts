@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { PatAuthProvider } from '../src/lib/auth';
-import { addMissingIssues, fetchBoard } from '../src/lib/fetcher';
+import { addMissingIssues, fetchBoard, nextCursor } from '../src/lib/fetcher';
 import { createGraphQLClient, type GraphQLFn } from '../src/lib/graphql';
 import { PartialSaveError, saveItemPatch } from '../src/lib/mutations';
 import { normalizeBoard } from '../src/lib/normalize';
@@ -28,9 +28,26 @@ describe('fetchBoard', () => {
     expect(calls[0].query).toContain('owner: organization(login: $owner)');
   });
 
+  it('fails loudly instead of truncating when a cursor repeats', async () => {
+    const { items: _ignored, ...board } = testBoard([]);
+    const gql: GraphQLFn = async () =>
+      ({ owner: { projectV2: { ...board, items: { nodes: [rawIssueItem({})], pageInfo: { hasNextPage: true, endCursor: 'same' } } } } }) as any;
+    await expect(fetchBoard(gql, testConfig)).rejects.toThrow(/repeated cursor/);
+  });
+
   it('explains a missing board', async () => {
     const gql: GraphQLFn = async () => ({ owner: { projectV2: null } }) as any;
     await expect(fetchBoard(gql, testConfig)).rejects.toThrow(/not found or not accessible/);
+  });
+});
+
+describe('nextCursor', () => {
+  it('returns null at the end, the cursor otherwise, and throws on bad page info', () => {
+    const seen = new Set<string>();
+    expect(nextCursor({ hasNextPage: false, endCursor: 'x' }, seen, 't')).toBeNull();
+    expect(nextCursor({ hasNextPage: true, endCursor: 'a' }, seen, 't')).toBe('a');
+    expect(() => nextCursor({ hasNextPage: true, endCursor: 'a' }, seen, 't')).toThrow(/repeated/);
+    expect(() => nextCursor({ hasNextPage: true, endCursor: null }, seen, 't')).toThrow(/no cursor/);
   });
 });
 
@@ -126,17 +143,41 @@ describe('createGraphQLClient', () => {
 });
 
 describe('PatAuthProvider', () => {
-  it('stores, notifies and clears the token', async () => {
+  const memStorage = () => {
     const mem = new Map<string, string>();
-    const storage = { getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
+    return { mem, getItem: (k: string) => mem.get(k) ?? null, setItem: (k: string, v: string) => void mem.set(k, v), removeItem: (k: string) => void mem.delete(k) };
+  };
+
+  it('keeps the token in memory only by default', async () => {
+    const storage = memStorage();
+    const auth = new PatAuthProvider(storage);
+    await auth.signIn('  ghp_x  ');
+    expect(auth.getToken()).toBe('ghp_x');
+    expect(auth.isRemembered()).toBe(false);
+    expect(storage.mem.size).toBe(0);
+    expect(new PatAuthProvider(storage).getToken()).toBeNull();
+  });
+
+  it('persists only when asked to remember, and forgets on sign-out', async () => {
+    const storage = memStorage();
     const auth = new PatAuthProvider(storage);
     const listener = vi.fn();
     auth.subscribe(listener);
     await expect(auth.signIn('  ')).rejects.toThrow();
-    await auth.signIn('  ghp_x  ');
-    expect(auth.getToken()).toBe('ghp_x');
+    await auth.signIn('ghp_y', { remember: true });
+    expect(auth.isRemembered()).toBe(true);
+    expect(new PatAuthProvider(storage).getToken()).toBe('ghp_y');
+    await auth.signIn('ghp_z');
+    expect(storage.mem.size).toBe(0);
     auth.signOut();
     expect(auth.getToken()).toBeNull();
-    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenCalledTimes(3);
+  });
+
+  it('works without any storage', async () => {
+    const auth = new PatAuthProvider(null);
+    await auth.signIn('ghp_x', { remember: true });
+    expect(auth.getToken()).toBe('ghp_x');
+    expect(auth.isRemembered()).toBe(false);
   });
 });
