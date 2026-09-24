@@ -45,6 +45,9 @@ export function App({ auth }: { auth: AuthProvider }) {
   const [savingIds, setSavingIds] = useState<Set<string>>(new Set());
   const [toast, setToast] = useState<Toast | null>(null);
   const [tokenOpen, setTokenOpen] = useState(false);
+  /** An edit made while signed out: retried after sign-in, or reopened in the editor if sign-in is cancelled. */
+  const [pending, setPending] = useState<{ itemId: string; patch: ItemPatch } | null>(null);
+  const [editorDraft, setEditorDraft] = useState<ItemPatch | null>(null);
   const [login, setLogin] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const currentProject = useRef(projectId);
@@ -70,6 +73,8 @@ export function App({ auth }: { auth: AuthProvider }) {
   useEffect(() => {
     if (!projectId || !index) return;
     setData(null);
+    setPending(null);
+    setEditingId(null);
     setLoadError(null);
     const entry = index.projects.find((p) => p.id === projectId);
     if (entry?.error) {
@@ -123,8 +128,9 @@ export function App({ auth }: { auth: AuthProvider }) {
         return;
       }
       if (!auth.getToken()) {
+        setPending({ itemId: item.itemId, patch });
         setTokenOpen(true);
-        setToast({ kind: 'info', text: 'Add a GitHub token to edit the board.' });
+        setToast({ kind: 'info', text: `Sign in to save your changes to ${label}.` });
         return;
       }
       const projectAtStart = data.id;
@@ -173,6 +179,28 @@ export function App({ auth }: { auth: AuthProvider }) {
       refreshingRef.current = false;
       setRefreshing(false);
     }
+  };
+
+  useEffect(() => {
+    if (!pending || !token || tokenOpen || !data) return;
+    setPending(null);
+    const item = data.items.find((i) => i.itemId === pending.itemId);
+    if (item) void save(item, pending.patch);
+  }, [pending, token, tokenOpen, data, save]);
+
+  const closeTokenDialog = () => {
+    setTokenOpen(false);
+    if (pending && !auth.getToken()) {
+      setEditorDraft(pending.patch);
+      setEditingId(pending.itemId);
+      setPending(null);
+      setToast({ kind: 'info', text: 'Not saved: sign in to write changes to GitHub. Your edits are kept in the editor.' });
+    }
+  };
+
+  const openEditor = (item: PlanItem) => {
+    setEditorDraft(null);
+    setEditingId(item.itemId);
   };
 
   const visible = useMemo(() => (data ? filterItems(data.items, filter) : []), [data, filter]);
@@ -256,16 +284,18 @@ export function App({ auth }: { auth: AuthProvider }) {
             items={visible}
             savingIds={savingIds}
             onMove={(item, statusOptionId) => save(item, { statusOptionId })}
-            onOpen={(item) => setEditingId(item.itemId)}
+            onOpen={openEditor}
           />
         )}
-        {data && view === 'gantt' && <Gantt data={data} items={visible} onOpen={(item) => setEditingId(item.itemId)} />}
+        {data && view === 'gantt' && <Gantt data={data} items={visible} onOpen={openEditor} />}
       </main>
 
       {editing && data && (
         <ItemEditor
+          key={editing.itemId}
           data={data}
           item={editing}
+          draft={editorDraft}
           saving={savingIds.has(editing.itemId)}
           onClose={() => setEditingId(null)}
           onSave={async (patch) => {
@@ -274,7 +304,7 @@ export function App({ auth }: { auth: AuthProvider }) {
           }}
         />
       )}
-      {tokenOpen && <TokenDialog auth={auth} login={login} onClose={() => setTokenOpen(false)} />}
+      {tokenOpen && <TokenDialog auth={auth} login={login} onClose={closeTokenDialog} />}
       {toast && (
         <div className={`toast ${toast.kind}`} role="status" onClick={() => setToast(null)}>
           {toast.text}

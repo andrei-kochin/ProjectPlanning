@@ -7,15 +7,18 @@ import { Modal } from './Modal';
 interface Props {
   data: ProjectData;
   item: PlanItem;
+  /** Unsaved values to start from instead of the item's current ones. */
+  draft?: ItemPatch | null;
   saving: boolean;
   onClose: () => void;
   onSave: (patch: ItemPatch) => void;
 }
 
-export function ItemEditor({ data, item, saving, onClose, onSave }: Props) {
-  const [status, setStatus] = useState(item.statusOptionId ?? '');
-  const [due, setDue] = useState(item.dueDate ?? '');
-  const [iteration, setIteration] = useState(item.iterationId ?? '');
+export function ItemEditor({ data, item, draft, saving, onClose, onSave }: Props) {
+  const start = { ...item, ...draft };
+  const [status, setStatus] = useState(start.statusOptionId ?? '');
+  const [due, setDue] = useState(start.dueDate ?? '');
+  const [iteration, setIteration] = useState(start.iterationId ?? '');
   const { fields } = data;
 
   const patch: ItemPatch = {};
@@ -36,7 +39,9 @@ export function ItemEditor({ data, item, saving, onClose, onSave }: Props) {
       <p className="muted small">
         {item.firstAssignedAt
           ? `First assigned ${formatDate(item.firstAssignedAt)} ${item.firstAssignedAt.slice(0, 4)} (Gantt start).`
-          : 'Never assigned: the Gantt shows only the due date.'}
+          : item.dueDate
+            ? 'Never assigned: the Gantt shows only the due date.'
+            : 'Never assigned and no due date: not on the Gantt timeline until it gets a due date or an assignee.'}
       </p>
 
       <form
