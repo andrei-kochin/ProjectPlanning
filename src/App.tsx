@@ -75,6 +75,7 @@ export function App({ auth }: { auth: AuthProvider }) {
     setData(null);
     setPending(null);
     setEditingId(null);
+    setFilter((f) => ({ ...f, assignee: undefined, label: undefined }));
     setLoadError(null);
     const entry = index.projects.find((p) => p.id === projectId);
     if (entry?.error) {
