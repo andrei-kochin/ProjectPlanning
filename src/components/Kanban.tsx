@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { optionColor } from '../lib/colors';
 import type { PlanItem, ProjectData } from '../lib/types';
 import { groupKanban, NO_STATUS, toDay } from '../lib/views';
+import { useToday } from '../lib/useToday';
 import { Avatars, formatDate, IssueRef, LabelChip } from './IssueBits';
 
 interface Props {
@@ -22,7 +23,7 @@ export function Kanban({ data, items, savingIds, onMove, onOpen }: Props) {
     () => new Map((data.fields.iteration?.iterations ?? []).map((i) => [i.id, i.title])),
     [data],
   );
-  const today = toDay(new Date().toISOString());
+  const today = toDay(useToday().toISOString());
 
   if (!data.fields.status) {
     return <div className="empty">This board has no "{data.config.fields.status}" single-select field, so there are no Kanban columns.</div>;
