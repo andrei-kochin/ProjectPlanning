@@ -44,7 +44,7 @@ export function parseProjectsConfig(text: string): ProjectConfig[] {
     return {
       id,
       name: typeof p.name === 'string' && p.name.trim() ? p.name.trim() : id,
-      repos: repoNames,
+      repos: dedupeCaseInsensitive(repoNames),
       board: { owner: str(b.owner, `${where}.board.owner`), ownerType, number },
       fields: {
         status: typeof f.status === 'string' ? f.status : DEFAULT_FIELDS.status,
@@ -53,5 +53,16 @@ export function parseProjectsConfig(text: string): ProjectConfig[] {
       },
       autoAddIssues: p.autoAddIssues === true,
     };
+  });
+}
+
+/** GitHub owner/repo names are case-insensitive; keep the first spelling of each. */
+function dedupeCaseInsensitive(names: string[]): string[] {
+  const seen = new Set<string>();
+  return names.filter((n) => {
+    const key = n.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
   });
 }

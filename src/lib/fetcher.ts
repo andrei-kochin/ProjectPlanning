@@ -66,6 +66,7 @@ export async function addMissingIssues(gql: GraphQLFn, cfg: ProjectConfig, board
     for (const issue of await fetchOpenIssueIds(gql, repo)) {
       if (onBoard.has(issue.id)) continue;
       await gql(ADD_ITEM_MUTATION, { projectId: board.id, contentId: issue.id });
+      onBoard.add(issue.id);
       added++;
     }
   }

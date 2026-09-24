@@ -27,6 +27,11 @@ projects:
     expect(p.fields).toEqual({ status: 'Status', dueDate: 'Due date', iteration: 'Iteration' });
   });
 
+  it('drops duplicate repos case-insensitively, keeping the first spelling', () => {
+    const [p] = parseProjectsConfig('projects: [{ id: x, repos: [Owner/Repo, a/b, owner/repo], board: { owner: o, number: 1 } }]');
+    expect(p.repos).toEqual(['Owner/Repo', 'a/b']);
+  });
+
   it.each([
     ['missing list', 'foo: 1', /top-level `projects:`/],
     ['bad repo', 'projects: [{ id: x, repos: [nope], board: { owner: o, number: 1 } }]', /owner\/name/],
