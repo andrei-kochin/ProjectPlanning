@@ -97,8 +97,10 @@ export function Kanban({ data, items, savingIds, onMove, onOpen }: Props) {
                         <span className="chip">{iterations.get(item.iterationId)}</span>
                       )}
                       {item.dueDate && (
-                        <span className={`chip ${overdue ? 'overdue' : ''}`} title={`Due ${item.dueDate}`}>
+                        <span className={`chip ${overdue ? 'overdue' : ''}`} title={`Due ${item.dueDate}${overdue ? ', overdue' : ''}`}>
+                          <span className="sr-only">Due </span>
                           {formatDate(item.dueDate)}
+                          {overdue && <span className="sr-only">, overdue</span>}
                         </span>
                       )}
                     </span>

@@ -21,6 +21,8 @@ function describe(row: GanttRow): string {
   if (i.firstAssignedAt) parts.push(`First assigned: ${i.firstAssignedAt.slice(0, 10)}`);
   parts.push(i.dueDate ? `Due: ${i.dueDate}` : 'No due date');
   if (row.kind === 'inverted') parts.push('Assigned after its due date');
+  if (row.kind === 'open-ended') parts.push(i.issue.state === 'CLOSED' ? 'Shown until it was closed' : 'Shown until today');
+  if (i.issue.state === 'CLOSED') parts.push('Closed');
   if (row.overdue) parts.push('Overdue');
   return parts.join('\n');
 }
@@ -123,7 +125,7 @@ export function Gantt({ data, items, onOpen }: Props) {
                           </button>
                           <Avatars logins={row.item.issue.assignees} size={18} />
                         </div>
-                        <div className="g-track" style={grid}>
+                        <div className="g-track" style={grid} role="img" aria-label={describe(row).replace(/\n/g, '. ')}>
                           {band && <div className="band" style={band} />}
                           {row.kind === 'due-only' ? (
                             <div
