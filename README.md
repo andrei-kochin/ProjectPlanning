@@ -79,7 +79,9 @@ Notes:
 
 ### 5. Editing from the site
 
-Click **Sign in to edit** and paste a personal token. This is your own token, not the Action's secret. It needs the same access: classic `repo` + `project` (write). The site checks the token against `api.github.com` and stores it **only in this browser's `localStorage`**. It is never committed or sent anywhere else. Use **Remove token** to delete it.
+Click **Sign in to edit** and paste a personal token. This is your own token, not the Action's secret. It needs the same access: classic `repo` + `project` (write). The site checks the token against `api.github.com` and sends it nowhere else. It is never committed.
+
+By default the token is kept **in memory only**, so it is gone when you reload or close the page. If you tick **Remember on this device**, it is saved in `localStorage` until you click **Remove token**. `localStorage` is scoped to the whole origin, not to this repo's path. Every project Pages site under `https://<user>.github.io/` can read it, and so could any script on those sites. Only opt in on a trusted device and when you don't publish untrusted Pages sites under the same account. A custom domain for this site gives it its own origin.
 
 With a token you can:
 
