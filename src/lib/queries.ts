@@ -36,7 +36,7 @@ const ITEM_FIELDS = /* GraphQL */ `
         closedAt
         repository { nameWithOwner }
         assignees(first: 10) { nodes { login } }
-        labels(first: 20) { nodes { name color } }
+        labels(first: 100) { nodes { name color } }
         timelineItems(itemTypes: [ASSIGNED_EVENT], first: 1) {
           nodes { ... on AssignedEvent { createdAt } }
         }

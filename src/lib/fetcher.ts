@@ -3,13 +3,29 @@ import { ADD_ITEM_MUTATION, boardQuery, REPO_OPEN_ISSUES_QUERY } from './queries
 import type { ProjectConfig } from './types';
 import type { RawBoard, RawItem } from './normalize';
 
+interface PageInfo {
+  hasNextPage: boolean;
+  endCursor: string | null;
+}
+
+/** Returns the next cursor, or null when done. Throws instead of looping forever or truncating. */
+export function nextCursor(pageInfo: PageInfo, seen: Set<string>, what: string): string | null {
+  if (!pageInfo.hasNextPage) return null;
+  const c = pageInfo.endCursor;
+  if (!c) throw new Error(`Pagination of ${what} reported more pages but returned no cursor`);
+  if (seen.has(c)) throw new Error(`Pagination of ${what} repeated cursor ${c}; aborting instead of returning partial data`);
+  seen.add(c);
+  return c;
+}
+
 /** Fetches a Projects v2 board with all items (paginated) in the raw GraphQL shape. */
 export async function fetchBoard(gql: GraphQLFn, cfg: ProjectConfig): Promise<RawBoard> {
   const query = boardQuery(cfg.board.ownerType);
   const items: RawItem[] = [];
   let after: string | null = null;
   let board: Omit<RawBoard, 'items'> | null = null;
-  for (let page = 0; page < 100; page++) {
+  const seen = new Set<string>();
+  do {
     const data: any = await gql(query, { owner: cfg.board.owner, number: cfg.board.number, after });
     const project = data?.owner?.projectV2;
     if (!project) {
@@ -20,9 +36,8 @@ export async function fetchBoard(gql: GraphQLFn, cfg: ProjectConfig): Promise<Ra
     const { items: pageItems, ...rest } = project;
     board ??= rest;
     items.push(...pageItems.nodes);
-    if (!pageItems.pageInfo.hasNextPage) break;
-    after = pageItems.pageInfo.endCursor;
-  }
+    after = nextCursor(pageItems.pageInfo, seen, `board #${cfg.board.number} items`);
+  } while (after);
   return { ...board!, items: { nodes: items } };
 }
 
@@ -30,14 +45,14 @@ async function fetchOpenIssueIds(gql: GraphQLFn, repo: string): Promise<{ id: st
   const [owner, name] = repo.split('/');
   const out: { id: string; number: number }[] = [];
   let after: string | null = null;
-  for (let page = 0; page < 100; page++) {
+  const seen = new Set<string>();
+  do {
     const data: any = await gql(REPO_OPEN_ISSUES_QUERY, { owner, name, after });
     const issues = data?.repository?.issues;
     if (!issues) throw new Error(`Repository ${repo} not found or its issues are not readable with this token`);
     out.push(...issues.nodes);
-    if (!issues.pageInfo.hasNextPage) break;
-    after = issues.pageInfo.endCursor;
-  }
+    after = nextCursor(issues.pageInfo, seen, `${repo} issues`);
+  } while (after);
   return out;
 }
 
