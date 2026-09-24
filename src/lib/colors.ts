@@ -36,10 +36,6 @@ export function readableTextOn(bg: string): string {
 
 /** Readable text color for a GitHub label background (hex without '#'). */
 export function labelTextColor(hex: string): string {
-  const n = parseInt(hex, 16);
-  if (Number.isNaN(n)) return '#1f2328';
-  const r = (n >> 16) & 255;
-  const g = (n >> 8) & 255;
-  const b = n & 255;
-  return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? '#1f2328' : '#ffffff';
+  if (!/^[0-9a-f]{6}$/i.test(hex)) return '#000000';
+  return readableTextOn(`#${hex}`);
 }

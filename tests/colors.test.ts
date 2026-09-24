@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { contrastRatio, OPTION_COLORS, readableTextOn } from '../src/lib/colors';
+import { contrastRatio, labelTextColor, OPTION_COLORS, readableTextOn } from '../src/lib/colors';
 import { msUntilNextUtcDay } from '../src/lib/useToday';
 
 describe('readableTextOn', () => {
@@ -14,6 +14,20 @@ describe('readableTextOn', () => {
     expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 5);
     expect(readableTextOn('#ffffff')).toBe('#000000');
     expect(readableTextOn('#000000')).toBe('#ffffff');
+  });
+});
+
+describe('labelTextColor', () => {
+  it('meets WCAG AA for any label color, including mid-grays', () => {
+    expect(labelTextColor('777777')).toBe('#000000');
+    for (let v = 0; v <= 0xffffff; v += 0x0f0f0f / 3) {
+      const hex = Math.floor(v).toString(16).padStart(6, '0');
+      expect(contrastRatio(`#${hex}`, labelTextColor(hex)), hex).toBeGreaterThanOrEqual(4.5);
+    }
+  });
+
+  it('falls back to black for invalid input', () => {
+    expect(labelTextColor('nope')).toBe('#000000');
   });
 });
 
