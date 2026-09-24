@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { optionColor } from '../lib/colors';
+import { optionColor, readableTextOn } from '../lib/colors';
 import type { PlanItem, ProjectData } from '../lib/types';
 import { buildGantt, fromDay, iterationEnd, toDay, type GanttRow } from '../lib/views';
+import { useToday } from '../lib/useToday';
 import { Avatars, formatDate, IssueRef } from './IssueBits';
 
 interface Props {
@@ -25,7 +26,8 @@ function describe(row: GanttRow): string {
 }
 
 export function Gantt({ data, items, onOpen }: Props) {
-  const model = useMemo(() => buildGantt(data, items), [data, items]);
+  const today = useToday();
+  const model = useMemo(() => buildGantt(data, items, today), [data, items, today]);
   const statusColor = useMemo(
     () => new Map((data.fields.status?.options ?? []).map((o) => [o.id, optionColor(o.color)])),
     [data],
@@ -132,7 +134,7 @@ export function Gantt({ data, items, onOpen }: Props) {
                           ) : (
                             <div
                               className={`bar ${row.kind} ${row.overdue ? 'overdue' : ''} ${closed ? 'closed' : ''}`}
-                              style={{ left: x(row.startDay), width: (row.endDay - row.startDay + 1) * PX, ['--c' as string]: color }}
+                              style={{ left: x(row.startDay), width: (row.endDay - row.startDay + 1) * PX, ['--c' as string]: color, ['--fg' as string]: readableTextOn(color) }}
                               title={describe(row)}
                             >
                               <span>{row.item.dueDate ? formatDate(row.item.dueDate) : ''}</span>
@@ -152,7 +154,7 @@ export function Gantt({ data, items, onOpen }: Props) {
       {model.unscheduled.length > 0 && (
         <div className="unscheduled">
           <h3>Not on the timeline ({model.unscheduled.length})</h3>
-          <p className="muted">Never assigned and no due date. Click one to set a due date or iteration.</p>
+          <p className="muted">Never assigned and no due date. Click one to set a due date (assignment is managed on GitHub).</p>
           <div className="unscheduled-list">
             {model.unscheduled.map((i) => (
               <button key={i.itemId} className="pill" onClick={() => onOpen(i)}>

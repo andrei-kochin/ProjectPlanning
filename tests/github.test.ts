@@ -69,6 +69,22 @@ describe('addMissingIssues', () => {
   });
 });
 
+describe('addMissingIssues with overlapping repos', () => {
+  it('never adds the same issue twice', async () => {
+    const board = testBoard([]);
+    const added: string[] = [];
+    const gql: GraphQLFn = async (query, vars: any) => {
+      if (query.includes('addProjectV2ItemById')) {
+        added.push(vars.contentId);
+        return {} as any;
+      }
+      return { repository: { issues: { nodes: [{ id: 'issue-7', number: 7 }], pageInfo: { hasNextPage: false, endCursor: null } } } } as any;
+    };
+    expect(await addMissingIssues(gql, { ...testConfig, repos: ['o/r', 'o/r'] }, board)).toBe(1);
+    expect(added).toEqual(['issue-7']);
+  });
+});
+
 describe('saveItemPatch', () => {
   const data = normalizeBoard(testBoard([rawIssueItem({})]), testConfig);
 
