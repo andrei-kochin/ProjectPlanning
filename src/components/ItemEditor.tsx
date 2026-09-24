@@ -39,7 +39,7 @@ export function ItemEditor({ data, item, draft, saving, onClose, onSave }: Props
       <p className="muted small">
         {item.firstAssignedAt
           ? `First assigned ${formatDate(item.firstAssignedAt)} ${item.firstAssignedAt.slice(0, 4)} (Gantt start).`
-          : item.dueDate
+          : due
             ? 'Never assigned: the Gantt shows only the due date.'
             : 'Never assigned and no due date: not on the Gantt timeline until it gets a due date or an assignee.'}
       </p>
