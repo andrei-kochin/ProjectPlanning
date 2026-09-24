@@ -10,6 +10,9 @@ import {
   iterationEnd,
   NO_ASSIGNEE,
   NO_ITERATION,
+  MAX_DAYS_FROM_TODAY,
+  mondays,
+  monthStarts,
   NO_STATUS,
   rollbackPatch,
   toDay,
@@ -189,5 +192,43 @@ describe('rollbackPatch', () => {
     expect(rollbackPatch(original, { statusOptionId: 'done' })).toEqual({ dueDate: null, iterationId: 'i1' });
     expect(rollbackPatch(original, {})).toEqual(original);
     expect(rollbackPatch(original, { statusOptionId: 'done', dueDate: '2026-10-01', iterationId: 'i2' })).toEqual({});
+  });
+});
+
+describe('timeline range cap', () => {
+  it('clamps outlier dates to a bounded window and flags clipped rows', () => {
+    const data = normalizeBoard(
+      testBoard([
+        rawIssueItem({ number: 1, values: [due('9999-12-31')] }),
+        rawIssueItem({ number: 2, assignedAt: ['1990-01-01T00:00:00Z'], values: [due('2026-09-30')] }),
+        rawIssueItem({ number: 3, assignedAt: ['2026-09-20T00:00:00Z'], values: [due('2026-10-01')] }),
+      ]),
+      testConfig,
+    );
+    const g = buildGantt(data, data.items, today);
+    expect(g.maxDay - g.todayDay).toBe(MAX_DAYS_FROM_TODAY);
+    expect(g.todayDay - g.minDay).toBe(MAX_DAYS_FROM_TODAY);
+    const rows = new Map(g.groups.flatMap((x) => x.rows).map((r) => [r.item.issue.number, r]));
+    expect([rows.get(1)!.clippedStart, rows.get(1)!.clippedEnd]).toEqual([false, true]);
+    expect([rows.get(2)!.clippedStart, rows.get(2)!.clippedEnd]).toEqual([true, false]);
+    expect([rows.get(3)!.clippedStart, rows.get(3)!.clippedEnd]).toEqual([false, false]);
+  });
+
+  it('does not widen a small range', () => {
+    const data = normalizeBoard(testBoard([rawIssueItem({ assignedAt: ['2026-09-20T00:00:00Z'], values: [due('2026-10-01')] })]), testConfig);
+    const g = buildGantt(data, data.items, today);
+    expect([fromDay(g.minDay), fromDay(g.maxDay)]).toEqual(['2026-09-20', '2026-10-01']);
+  });
+});
+
+describe('tick generators', () => {
+  it('lists month starts across a year boundary', () => {
+    expect(monthStarts(toDay('2026-11-15'), toDay('2027-02-01')).map(fromDay)).toEqual(['2026-12-01', '2027-01-01', '2027-02-01']);
+    expect(monthStarts(toDay('2026-09-01'), toDay('2026-09-30')).map(fromDay)).toEqual(['2026-09-01']);
+  });
+
+  it('lists Mondays', () => {
+    expect(mondays(toDay('2026-09-23'), toDay('2026-10-12')).map(fromDay)).toEqual(['2026-09-28', '2026-10-05', '2026-10-12']);
+    expect(mondays(toDay('2026-09-21'), toDay('2026-09-21')).map(fromDay)).toEqual(['2026-09-21']);
   });
 });

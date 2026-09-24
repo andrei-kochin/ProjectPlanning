@@ -58,6 +58,9 @@ export interface GanttRow {
   startDay: number;
   endDay: number;
   overdue: boolean;
+  /** The bar extends past the displayed range and is cut at that edge. */
+  clippedStart: boolean;
+  clippedEnd: boolean;
 }
 
 export interface GanttGroup {
@@ -66,6 +69,9 @@ export interface GanttGroup {
   iteration: Iteration | null;
   rows: GanttRow[];
 }
+
+/** How far the Gantt extends before and after today, at most. */
+export const MAX_DAYS_FROM_TODAY = 366;
 
 export interface GanttModel {
   groups: GanttGroup[];
@@ -82,14 +88,14 @@ export function ganttRow(item: PlanItem, todayDay: number): GanttRow | null {
   const overdue = open && due !== null && due < todayDay;
   if (start !== null && due !== null) {
     return start <= due
-      ? { item, kind: 'bar', startDay: start, endDay: due, overdue }
-      : { item, kind: 'inverted', startDay: due, endDay: start, overdue };
+      ? { item, kind: 'bar', startDay: start, endDay: due, overdue, clippedStart: false, clippedEnd: false }
+      : { item, kind: 'inverted', startDay: due, endDay: start, overdue, clippedStart: false, clippedEnd: false };
   }
   if (start !== null) {
     const end = !open && item.issue.closedAt ? toDay(item.issue.closedAt) : todayDay;
-    return { item, kind: 'open-ended', startDay: start, endDay: Math.max(start, end), overdue: false };
+    return { item, kind: 'open-ended', startDay: start, endDay: Math.max(start, end), overdue: false, clippedStart: false, clippedEnd: false };
   }
-  if (due !== null) return { item, kind: 'due-only', startDay: due, endDay: due, overdue };
+  if (due !== null) return { item, kind: 'due-only', startDay: due, endDay: due, overdue, clippedStart: false, clippedEnd: false };
   return null;
 }
 
@@ -120,13 +126,51 @@ export function buildGantt(data: ProjectData, items: PlanItem[] = data.items, to
       days.push(toDay(g.iteration.startDate), toDay(iterationEnd(g.iteration)));
     }
   }
+  // Dates are free-form board fields; one outlier (e.g. year 9999) must not blow up the timeline.
+  const minDay = Math.max(todayDay - MAX_DAYS_FROM_TODAY, Math.min(...days));
+  const maxDay = Math.min(todayDay + MAX_DAYS_FROM_TODAY, Math.max(...days));
+  for (const g of all) {
+    for (const r of g.rows) {
+      r.clippedStart = r.startDay < minDay;
+      r.clippedEnd = r.endDay > maxDay;
+    }
+  }
   return {
     groups: all.filter((g) => g.rows.length > 0),
     unscheduled,
-    minDay: Math.min(...days),
-    maxDay: Math.max(...days),
+    minDay,
+    maxDay,
     todayDay,
   };
+}
+
+export function clampDay(day: number, minDay: number, maxDay: number): number {
+  return Math.min(maxDay, Math.max(minDay, day));
+}
+
+/** Day numbers of each month's 1st within [minDay, maxDay], computed by jumping month to month. */
+export function monthStarts(minDay: number, maxDay: number): number[] {
+  const out: number[] = [];
+  const first = new Date(minDay * DAY);
+  let y = first.getUTCFullYear();
+  let m = first.getUTCMonth();
+  for (;;) {
+    const d = Math.floor(Date.UTC(y, m, 1) / DAY);
+    if (d > maxDay) break;
+    if (d >= minDay) out.push(d);
+    if (++m === 12) {
+      m = 0;
+      y++;
+    }
+  }
+  return out;
+}
+
+/** Day numbers of each Monday within [minDay, maxDay]. Day 0 (1970-01-01) was a Thursday. */
+export function mondays(minDay: number, maxDay: number): number[] {
+  const out: number[] = [];
+  for (let d = minDay + ((7 - ((minDay + 3) % 7)) % 7); d <= maxDay; d += 7) out.push(d);
+  return out;
 }
 
 /* ---------- filtering & local updates ---------- */
