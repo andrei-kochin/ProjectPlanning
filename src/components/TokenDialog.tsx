@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AuthProvider } from '../lib/auth';
 import { createGraphQLClient } from '../lib/graphql';
 import { VIEWER_QUERY } from '../lib/queries';
@@ -15,6 +15,13 @@ export function TokenDialog({ auth, login, onClose }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const signedIn = !!auth.getToken();
+  const closed = useRef(false);
+  useEffect(() => {
+    closed.current = false;
+    return () => {
+      closed.current = true;
+    };
+  }, []);
 
   const submit = async () => {
     setBusy(true);
@@ -22,12 +29,13 @@ export function TokenDialog({ auth, login, onClose }: Props) {
     try {
       const probe = createGraphQLClient({ getToken: () => value.trim() });
       await probe(VIEWER_QUERY);
+      if (closed.current) return;
       await auth.signIn(value);
       onClose();
     } catch (e) {
-      setError((e as Error).message);
+      if (!closed.current) setError((e as Error).message);
     } finally {
-      setBusy(false);
+      if (!closed.current) setBusy(false);
     }
   };
 
